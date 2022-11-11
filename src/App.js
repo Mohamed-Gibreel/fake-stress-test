@@ -1,23 +1,37 @@
-import logo from './logo.svg';
-import './App.css';
+import logo from "./logo.svg";
+import "./App.css";
+
+import { useEffect, useState } from "react";
+import axios from "axios";
 
 function App() {
+  const [numOfSuccess, setNumOfSuccess] = useState(0);
+  const [errorCounter, setErrorCounter] = useState(0);
+  const [errorMessages, setErrorMessages] = useState([]);
+
+  useEffect(() => {
+    setInterval(async () => {
+      try {
+        await fetch("https://apim.dct.gov.ae/ubfpos/api/InitialRequest");
+        setNumOfSuccess((o) => o + 1);
+      } catch (e) {
+        setErrorCounter((o) => o + 1);
+        setErrorMessages((o) => [...o, e]);
+      }
+    }, 1000);
+  }, []);
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div
+      style={{
+        height: "100vh",
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+      }}
+    >
+      <div>Success: {numOfSuccess}</div>
+      <div>Error: {errorCounter}</div>
     </div>
   );
 }
